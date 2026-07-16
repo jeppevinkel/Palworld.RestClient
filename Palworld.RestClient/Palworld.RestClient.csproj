@@ -3,10 +3,15 @@
     <PropertyGroup>
         <PackageId>Palworld.RestClient</PackageId>
         <Description>A .NET REST API client for the Palworld dedicated server REST API.</Description>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="System.Text.Json" Version="10.0.10" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>
