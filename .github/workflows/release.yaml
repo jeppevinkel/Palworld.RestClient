@@ -1,0 +1,70 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'v*.*.*-*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.x'
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          if [[ "$VERSION" == *-* ]]; then
+            echo "PRERELEASE=true" >> $GITHUB_OUTPUT
+          else
+            echo "PRERELEASE=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore -c Release
+
+      - name: Pack
+        run: |
+          dotnet pack Palworld.RestClient/Palworld.RestClient.csproj \
+            --no-build -c Release \
+            -p:Version=${{ steps.version.outputs.VERSION }} \
+            -o ./artifacts
+
+          dotnet pack Palworld.RestClient.Extensions.DependencyInjection/Palworld.RestClient.Extensions.DependencyInjection.csproj \
+            --no-build -c Release \
+            -p:Version=${{ steps.version.outputs.VERSION }} \
+            -o ./artifacts
+
+      - name: Push to NuGet
+        run: |
+          dotnet nuget push ./artifacts/*.nupkg \
+            --api-key ${{ secrets.NUGET_API_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate
+          
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          EXTRA_ARGS=""
+          if [[ "${{ steps.version.outputs.PRERELEASE }}" == "true" ]]; then
+            EXTRA_ARGS="--prerelease"
+          fi
+          gh release create "$GITHUB_REF_NAME" ./artifacts/*.nupkg \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes \
+            $EXTRA_ARGS

@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="Palworld.RestClient/Palworld.RestClient.csproj" />
+  <Folder Name="/SolutionFolder/">
+    <File Path=".github\workflows\ci.yaml" />
+    <File Path=".github\workflows\release.yaml" />
+    <File Path="Directory.Build.props" />
+  </Folder>
+  <Project Path="Palworld.RestClient.Extensions.DependencyInjection/Palworld.RestClient.Extensions.DependencyInjection.csproj" />
+</Solution>
