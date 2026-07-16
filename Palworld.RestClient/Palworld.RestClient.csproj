@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <PackageId>Palworld.RestClient</PackageId>
+        <Description>A .NET REST API client for the Palworld dedicated server REST API.</Description>
     </PropertyGroup>
 
     <ItemGroup>
