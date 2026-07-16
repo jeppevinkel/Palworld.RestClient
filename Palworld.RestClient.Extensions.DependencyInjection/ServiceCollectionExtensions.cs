@@ -5,8 +5,26 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Palworld.RestClient.Extensions.DependencyInjection
 {
+    /// <summary>
+    /// Extension methods for registering Palworld REST client services
+    /// with the dependency injection container.
+    /// </summary>
     public static class ServiceCollectionExtensions
     {
+        /// <summary>
+        /// Registers <see cref="PalworldClient"/> as a typed HTTP client
+        /// in the dependency injection container.
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
+        /// <param name="baseAddress">
+        /// The base URL of the Palworld server REST API (e.g. <c>http://localhost:8212</c>).
+        /// </param>
+        /// <param name="password">The admin password configured on the server.</param>
+        /// <returns>The same <see cref="IServiceCollection"/> for chaining.</returns>
+        /// <exception cref="ArgumentException">
+        /// Thrown if <paramref name="baseAddress"/> or <paramref name="password"/> is null, empty,
+        /// or if <paramref name="baseAddress"/> is not a valid absolute URI.
+        /// </exception>
         public static IServiceCollection AddPalworldClient(
             this IServiceCollection services,
             string baseAddress,

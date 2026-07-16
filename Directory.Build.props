@@ -4,5 +4,17 @@
     <LangVersion>9</LangVersion>
     <Nullable>enable</Nullable>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <Authors>jeppevinkel</Authors>
+    <Copyright>Copyright © jeppevinkel</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/jeppevinkel/Palworld.RestClient</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/jeppevinkel/Palworld.RestClient</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>palworld;rest;client;game-server;api</PackageTags>
+
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 </Project>
