@@ -16,5 +16,21 @@
 
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+    <!-- SourceLink (built into the .NET 8+ SDK, no package reference needed) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <!-- Deterministic, normalized builds when running in GitHub Actions -->
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+
+    <!-- Reproducible restores; enables lock-file based caching in CI -->
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+
+    <!-- Fails the pack if the package breaks public API compatibility.
+         Uncomment the baseline once your first stable version is on NuGet.org,
+         and bump it each time you ship a new stable release. -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <!-- <PackageValidationBaselineVersion>1.0.0</PackageValidationBaselineVersion> -->
   </PropertyGroup>
 </Project>
