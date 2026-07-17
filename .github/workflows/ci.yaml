@@ -1,25 +1,59 @@
 name: CI
 
 on:
+  push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
   workflow_dispatch:
 
-jobs: 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true   # superseded pushes to the same PR get cancelled
+
+permissions:
+  contents: read
+
+jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v6
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: '10.x'
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
 
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore --locked-mode
 
       - name: Build
         run: dotnet build --no-restore -c Release
+
+      - name: Test
+        run: dotnet test --no-build -c Release --verbosity normal
+
+      - name: Pack (validation only)
+        run: |
+          dotnet pack Palworld.RestClient/Palworld.RestClient.csproj \
+            --no-build -c Release \
+            -p:Version=0.0.0-ci.${{ github.run_number }} \
+            -o ./artifacts
+
+          dotnet pack Palworld.RestClient.Extensions.DependencyInjection/Palworld.RestClient.Extensions.DependencyInjection.csproj \
+            --no-build -c Release \
+            -p:Version=0.0.0-ci.${{ github.run_number }} \
+            -o ./artifacts
+
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: packages
+          path: ./artifacts/*
+          retention-days: 7
